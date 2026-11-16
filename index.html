@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6efe3">
 <title>Mapa de España — Estudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -119,41 +120,54 @@ kbd{font:600 12px Inter,sans-serif;background:#f1e8da;border-radius:5px;padding:
 .whorow .pick small{color:var(--muted);font-weight:500;margin-left:6px}
 .whorow .del{border:0;background:#f1e8da;border-radius:12px;padding:0 12px;cursor:pointer;color:#7a6c60;font:600 13px Inter,sans-serif}
 .whorow .del.sure{background:var(--bad);color:#fff}
+nav.tabs .ic{display:none}
+.zoomctl{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;gap:6px;z-index:2}
+.zoomctl button{width:38px;height:38px;border-radius:12px;border:1px solid rgba(60,40,20,.12);background:rgba(255,253,248,.95);font:600 20px Inter,sans-serif;color:#4e4137;cursor:pointer;box-shadow:0 1px 4px rgba(60,40,20,.15);touch-action:manipulation}
+.zoomctl button:hover{color:var(--accent)}
+#zReset{font-size:17px}
+#map{touch-action:pan-y}
+#map.zoomed{touch-action:none;cursor:grab}
+#map.dragging{cursor:grabbing}
+@media (pointer:coarse){.hit{stroke-width:30}.pt .hitc{r:22px}}
 /* ---- SVG ---- */
-#map text{font-family:Inter,sans-serif;paint-order:stroke;stroke:#fffdf8;stroke-width:5px;stroke-linejoin:round;pointer-events:none}
-.other{fill:#e2ddd3;stroke:#cfc8bb;stroke-width:1.5}
-.otherlbl{fill:#a89f92;font-size:20px;font-weight:700;letter-spacing:.25em;stroke:none!important}
+#map text{font-family:Inter,sans-serif;paint-order:stroke;stroke:#fffdf8;stroke-width:calc(var(--u,1.5)*3.2px);stroke-linejoin:round;pointer-events:none}
+#map path,#map rect{vector-effect:non-scaling-stroke}
+.other{fill:#e2ddd3;stroke:#cfc8bb;stroke-width:1}
+.otherlbl{fill:#a89f92;font-size:calc(var(--u,1.5)*11px);font-weight:700;letter-spacing:.25em;stroke:none!important}
 .feat{cursor:pointer}
-.region path{fill:var(--land);stroke:#fffdf8;stroke-width:2.2;stroke-linejoin:round;transition:fill .15s}
+.region path{fill:var(--land);stroke:#fffdf8;stroke-width:1.4;stroke-linejoin:round;transition:fill .15s}
 svg.colors .region path{fill:var(--c)}
 .region .hitarea{fill:transparent!important;stroke:none!important}
-.region:hover path:not(.hitarea){fill:#f6c98d}
 .zone .vis{fill:transparent;transition:fill .15s}
-.zone:hover .vis{fill:rgba(255,255,255,.4)}
-.range .vis{fill:none;stroke:#8b5e34;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;opacity:.62}
-.range:hover .vis{opacity:1}
-.river .vis{fill:none;stroke:#2f7fc1;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
-.river:hover .vis{stroke-width:7}
-.hit{fill:none;stroke:transparent;stroke-width:28;stroke-linecap:round;pointer-events:stroke}
+.range .vis{fill:none;stroke:#8b5e34;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;opacity:.62}
+.river .vis{fill:none;stroke:#2f7fc1;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.hit{fill:none;stroke:transparent;stroke-width:20;stroke-linecap:round;pointer-events:stroke}
 .pt .hitc{fill:transparent}
-.pt .vis{fill:#fff;stroke:#3b2f2a;stroke-width:3}
-.pt.peak .vis{fill:#8b5e34;stroke:#fffdf8;stroke-width:2.5}
-.pt.rock .vis{fill:#6d6a8a;stroke:#fffdf8;stroke-width:2.5}
-.pt:hover .vis{stroke:var(--hl);stroke-width:4}
-.inset rect.box{fill:#c3dbe8;stroke:#9fbccc;stroke-width:2;stroke-dasharray:7 6}
+.sc{transform:scale(var(--u,1.5))}
+.pt .vis{fill:#fff;stroke:#3b2f2a;stroke-width:2}
+.pt.peak .vis{fill:#8b5e34;stroke:#fffdf8;stroke-width:1.6}
+.pt.rock .vis{fill:#6d6a8a;stroke:#fffdf8;stroke-width:1.6}
+.inset rect.box{fill:#c3dbe8;stroke:#9fbccc;stroke-width:1.2;stroke-dasharray:5 4}
 .inset text.ttl{font-size:17px;font-weight:700;fill:#5d7a8a;stroke:none}
-.minor{fill:#b9b2a6;font-size:14px}
+.minor{fill:#b9b2a6;font-size:calc(var(--u,1.5)*9px)}
+@media (hover:hover){
+.region:hover path:not(.hitarea){fill:#f6c98d}
+.zone:hover .vis{fill:rgba(255,255,255,.4)}
+.range:hover .vis{opacity:1}
+.river:hover .vis{stroke-width:4.5}
+.pt:hover .vis{stroke:var(--hl);stroke-width:2.5}
+}
 /* states */
 .region.ok path:not(.hitarea){fill:#86cf9e!important}
 .region.bad path:not(.hitarea){fill:#f0928a!important}
 .region.target path:not(.hitarea),.region.sel path:not(.hitarea){fill:var(--hl)!important}
-.range.ok .vis,.river.ok .vis{stroke:var(--ok);opacity:1;stroke-width:9}
-.range.bad .vis,.river.bad .vis{stroke:var(--bad);opacity:1;stroke-width:9}
-.range.target .vis,.river.target .vis,.range.sel .vis,.river.sel .vis{stroke:var(--hl);opacity:1;stroke-width:11}
+.range.ok .vis,.river.ok .vis{stroke:var(--ok);opacity:1;stroke-width:6}
+.range.bad .vis,.river.bad .vis{stroke:var(--bad);opacity:1;stroke-width:6}
+.range.target .vis,.river.target .vis,.range.sel .vis,.river.sel .vis{stroke:var(--hl);opacity:1;stroke-width:7}
 .zone.ok .vis{fill:rgba(47,158,91,.35)} .zone.bad .vis{fill:rgba(210,63,49,.3)}
 .zone.target .vis,.zone.sel .vis{fill:rgba(240,138,36,.45)}
 .pt.ok .vis{fill:var(--ok)} .pt.bad .vis{fill:var(--bad)}
-.pt.target .vis,.pt.sel .vis{fill:var(--hl);stroke:#fff;stroke-width:3}
+.pt.target .vis,.pt.sel .vis{fill:var(--hl);stroke:#fff;stroke-width:2}
 .target{animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.5}}
 /* modes */
@@ -166,28 +180,44 @@ svg.names #labels,svg.picknames #labels{display:block}
 svg.picknames:not(.names) #labels text:not(.on){display:none}
 svg.lm-only.picknames #labels .lbl-com{display:none}
 .region.learned path:not(.hitarea){fill:var(--c)}
-.lbl-com{font-size:19px;font-weight:700;fill:#3a2f27}
-.lbl-lm{font-size:16px;font-weight:600;fill:#6b4521;font-style:italic}
+.lbl-com{font-size:calc(var(--u,1.5)*12.5px);font-weight:700;fill:#3a2f27}
+.lbl-lm{font-size:calc(var(--u,1.5)*11px);font-weight:600;fill:#6b4521;font-style:italic}
 .lbl-lm.k-river{fill:#1f5f99}
-.lbl-lm.k-zone{fill:#3d6f8c;font-size:22px;letter-spacing:.06em}
+.lbl-lm.k-zone{fill:#3d6f8c;font-size:calc(var(--u,1.5)*13px);letter-spacing:.06em}
 .lbl-lm.k-pt{fill:#3b2f2a;font-style:normal}
-.num circle{fill:#2a221d;stroke:#fffdf8;stroke-width:3}
-.num text{fill:#fff!important;stroke:none!important;font-size:16px;font-weight:700}
+.num circle{fill:#2a221d;stroke:#fffdf8;stroke-width:2}
+.num text{fill:#fff!important;stroke:none!important;font-size:11.5px;font-weight:700}
 .num.ok circle{fill:var(--ok)} .num.bad circle{fill:var(--bad)} .num.focus circle{fill:var(--hl)}
 
 @media (max-width:920px){
-  header{padding:14px 12px 10px}
-  .brand h1{font-size:23px}
-  .layout{grid-template-columns:1fr;padding:0 10px 18px;gap:12px}
-  .panel{position:static;max-height:none;order:-1;padding:16px}
-  .layout.mapfirst .panel{order:1}
+  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+  header{position:relative;padding:calc(10px + env(safe-area-inset-top)) 12px 8px}
+  .brand h1{font-size:22px}
+  .brand p{display:none}
+  .hright{display:contents}
+  .who{position:absolute;top:calc(9px + env(safe-area-inset-top));right:12px;padding:6px 11px;font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;border-radius:0;background:rgba(255,253,248,.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));gap:0;flex-wrap:nowrap;justify-content:space-around}
+  nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;border-radius:12px;font-size:11px;color:#7a6c60;min-width:0}
+  nav.tabs button .ic{display:block;font-size:20px;line-height:1.1;filter:grayscale(.6);opacity:.75}
+  nav.tabs button.on{background:transparent;box-shadow:none;color:var(--accent)}
+  nav.tabs button.on .ic{filter:none;opacity:1}
+  .layout{grid-template-columns:1fr;padding:0 8px 16px;gap:10px}
+  .mapcard{position:sticky;top:0;z-index:5;border-radius:16px;margin-top:2px}
+  .layout.menu .mapcard{display:none}
+  .panel{position:static;max-height:none;padding:14px;border-radius:16px}
   #map{max-height:none}
-  header{position:relative}
-  .brand{padding-right:110px}
-  .who{position:absolute;top:14px;right:12px;padding:7px 11px;font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis}
-  .hright{width:100%}
-  nav.tabs{width:100%;justify-content:space-between;flex-wrap:nowrap;overflow-x:auto;gap:2px}
-  nav.tabs button{padding:8px 7px;font-size:12.5px;white-space:nowrap}
+  body.kb nav.tabs{display:none}
+  body.kb{padding-bottom:0}
+  body.kb #map{max-height:30svh}
+  .zoomctl{right:8px;bottom:8px;gap:5px}
+  .zoomctl button{width:34px;height:34px;font-size:18px;border-radius:10px}
+  .prompt{padding:10px 14px;margin:2px 0 8px}
+  .prompt .target{font-size:23px}
+  .bigname{font-size:30px}
+  .simrow input{font-size:16px}
+  .btn{padding:11px 14px}
+  .fb{min-height:0}
+  .big{font-size:40px}
 }
 </style>
 </head>
@@ -199,11 +229,11 @@ svg.lm-only.picknames #labels .lbl-com{display:none}
   </div>
   <div class="hright"><button class="who" id="whoBtn" title="Cambiar de persona">👤 <span id="whoName">¿Quién?</span></button>
   <nav class="tabs" id="tabs">
-    <button data-v="aprender">Aprender</button>
-    <button data-v="explorar">Explorar</button>
-    <button data-v="localiza">Localiza</button>
-    <button data-v="escribe">Escribe</button>
-    <button data-v="simulacro">Simulacro</button>
+    <button data-v="aprender"><span class="ic">📘</span><span class="tl">Aprender</span></button>
+    <button data-v="explorar"><span class="ic">🗺️</span><span class="tl">Explorar</span></button>
+    <button data-v="localiza"><span class="ic">📍</span><span class="tl">Localiza</span></button>
+    <button data-v="escribe"><span class="ic">✏️</span><span class="tl">Escribe</span></button>
+    <button data-v="simulacro"><span class="ic">📝</span><span class="tl">Simulacro</span></button>
   </nav></div>
 </header>
 <div class="overlay" id="who" hidden><div class="modal">
@@ -214,7 +244,7 @@ svg.lm-only.picknames #labels .lbl-com{display:none}
   <p class="note" id="whoNote"></p>
 </div></div>
 <main class="layout" id="layout">
-  <section class="mapcard"><svg id="map" viewBox="0 0 1480 1331" xmlns="http://www.w3.org/2000/svg" aria-label="Mapa de España"></svg></section>
+  <section class="mapcard"><div class="zoomctl"><button id="zIn" aria-label="Acercar">+</button><button id="zOut" aria-label="Alejar">−</button><button id="zReset" aria-label="Ver todo">⤢</button></div><svg id="map" viewBox="0 0 1480 1331" xmlns="http://www.w3.org/2000/svg" aria-label="Mapa de España"></svg></section>
   <aside class="panel" id="panel"></aside>
 </main>
 
@@ -358,24 +388,22 @@ function build(){
  for(const l of LMS.filter(l=>l.kind==='range'||l.kind==='river')){const d=l.kind==='river'?GEO.rivers[l.id]:dPath(chaikin(l.line,3),false);h+=`<g class="feat lm ${l.kind}" data-id="${l.id}"><path class="vis" d="${d}"/><path class="hit" d="${d}"/></g>`;}
  for(const l of LMS.filter(l=>l.pt)){
   const [x,y]=(l.inset?PI:P)(l.pt); let vis;
-  if(l.kind==='peak') vis=`<path class="vis" d="M${f1(x)},${f1(y-14)}L${f1(x+13)},${f1(y+9)}L${f1(x-13)},${f1(y+9)}Z"/>`;
-  else if(l.kind==='rock') vis=`<rect class="vis" x="${f1(x-8)}" y="${f1(y-8)}" width="16" height="16" rx="3"/>`;
-  else vis=`<circle class="vis" cx="${f1(x)}" cy="${f1(y)}" r="8.5"/>`;
-  h+=`<g class="feat lm pt ${l.kind}" data-id="${l.id}"><circle class="hitc" cx="${f1(x)}" cy="${f1(y)}" r="22"/>${vis}</g>`;
+  if(l.kind==='peak') vis=`<path class="vis" d="M0,-8L7.5,5L-7.5,5Z"/>`;
+  else if(l.kind==='rock') vis=`<rect class="vis" x="-5" y="-5" width="10" height="10" rx="2"/>`;
+  else vis=`<circle class="vis" r="5.5"/>`;
+  h+=`<g class="feat lm pt ${l.kind}" data-id="${l.id}" transform="translate(${f1(x)} ${f1(y)})"><g class="sc"><circle class="hitc" r="16"/>${vis}</g></g>`;
  }
  h+='</g>';
  // labels
  h+='<g id="labels">';
  for(const r of REGIONS){const [x,y]=anchor(r);const t=r.id==='valencia'?`<tspan x="${f1(x)}" dy="-0.55em">Comunidad</tspan><tspan x="${f1(x)}" dy="1.1em">Valenciana</tspan>`:r.name;h+=`<text data-for="${r.id}" class="lbl lbl-com" x="${f1(x)}" y="${f1(y)}" text-anchor="middle" dominant-baseline="middle">${t}</text>`;}
  for(const l of LMS){
-  let [x,y]=anchor(l); let cls='lbl lbl-lm', anc='middle';
-  if(l.kind==='river') cls+=' k-river'; else if(l.kind==='zone') cls+=' k-zone'; else if(l.pt) {cls+=' k-pt'; anc='start'; x+=14; y-=12;}
-  if(l.id==='finisterre'){anc='start';x=P(l.pt)[0]+14;y=P(l.pt)[1]-14;}
-  if(l.id==='creus'){anc='end';x=P(l.pt)[0]-12;y=P(l.pt)[1]-14;}
-  if(l.id==='penon'){anc='end';x=P(l.pt)[0]-12;y=P(l.pt)[1]-12;}
-  if(l.id==='mulhacen'){anc='end';x=P(l.pt)[0]-14;}
+  let [x,y]=anchor(l); let cls='lbl lbl-lm', anc='middle', dx='0', dy='0';
+  if(l.kind==='river') cls+=' k-river'; else if(l.kind==='zone') cls+=' k-zone'; else if(l.pt) {cls+=' k-pt'; anc='start'; dx='0.9em'; dy='-0.8em';}
+  if(l.id==='creus'||l.id==='penon'){anc='end';dx='-0.9em';}
+  if(l.id==='mulhacen'){anc='end';dx='-1em';dy='0';}
   const rot=l.id==='atlantico'?` transform="rotate(-90 ${f1(x)} ${f1(y)})"`:'';
-  h+=`<text data-for="${l.id}" class="${cls}" x="${f1(x)}" y="${f1(y)}" text-anchor="${anc}" dominant-baseline="middle"${rot}>${l.name}</text>`;
+  h+=`<text data-for="${l.id}" class="${cls}" x="${f1(x)}" y="${f1(y)}" dx="${dx}" dy="${dy}" text-anchor="${anc}" dominant-baseline="middle"${rot}>${l.name}</text>`;
  }
  h+='</g>';
  h+='<g id="numLayer"></g>';
@@ -443,7 +471,52 @@ function svgMode(mode,set){
  if(set==='miss'){const p=setPool('miss');if(!p.some(i=>i.type==='lm'))svg.classList.add('hide-lm');if(!p.some(i=>i.type==='com'))svg.classList.add('lm-only');}
  if(mode==='sim'||mode==='type') svg.classList.add('passive');
 }
+function setMenu(on){$('#layout').classList.toggle('menu',on);if(!on)requestAnimationFrame(()=>{updateScale();window.scrollTo({top:0});});}
 const kindLabel=it=>it.type==='com'?'Comunidad autónoma':'Accidente geográfico';
+
+/* ============ ZOOM, PAN, LABEL FITTING ============ */
+const VB0={x:0,y:0,w:1480,h:1331}; let VB={...VB0};
+function applyVB(){svg.setAttribute('viewBox',`${VB.x.toFixed(1)} ${VB.y.toFixed(1)} ${VB.w.toFixed(1)} ${VB.h.toFixed(1)}`);updateScale();}
+function updateScale(){const r=svg.getBoundingClientRect();if(!r.width)return;const sc=Math.min(r.width/VB.w,r.height/VB.h);svg.style.setProperty('--u',(1/sc).toFixed(4));svg.classList.toggle('zoomed',VB.w<VB0.w-1);scheduleCull();}
+function clampVB(){VB.w=Math.min(VB0.w,Math.max(VB0.w/10,VB.w));VB.h=VB.w*VB0.h/VB0.w;VB.x=Math.max(0,Math.min(VB0.w-VB.w,VB.x));VB.y=Math.max(0,Math.min(VB0.h-VB.h,VB.y));}
+function zoomAbout(f,cx,cy,base=VB){const w=Math.min(VB0.w,Math.max(VB0.w/10,base.w/f)),k=w/base.w;VB={x:cx-(cx-base.x)*k,y:cy-(cy-base.y)*k,w,h:base.h*k};clampVB();applyVB();}
+function toSvg(x,y){const p=svg.createSVGPoint();p.x=x;p.y=y;return p.matrixTransform(svg.getScreenCTM().inverse());}
+function zoomCenter(f){zoomAbout(f,VB.x+VB.w/2,VB.y+VB.h/2);}
+function resetZoom(){VB={...VB0};applyVB();}
+$('#zIn').onclick=()=>zoomCenter(1.6); $('#zOut').onclick=()=>zoomCenter(1/1.6); $('#zReset').onclick=resetZoom;
+// pointer gestures: pinch to zoom, drag to pan (when zoomed); a drag never counts as a click
+const PT=new Map(); let G=null, dragged=false;
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+svg.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;PT.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(PT.size===1){dragged=false;G={t:'pan',sx:e.clientX,sy:e.clientY,vb:{...VB}};}
+ else if(PT.size===2){const [a,b]=[...PT.values()];G={t:'pinch',d:dist(a,b),vb:{...VB},m:toSvg((a.x+b.x)/2,(a.y+b.y)/2)};dragged=true;}});
+window.addEventListener('pointermove',e=>{if(!PT.has(e.pointerId)||!G)return;PT.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(G.t==='pinch'&&PT.size>=2){const [a,b]=[...PT.values()];zoomAbout(dist(a,b)/G.d,G.m.x,G.m.y,G.vb);e.preventDefault();}
+ else if(G.t==='pan'){const dx=e.clientX-G.sx,dy=e.clientY-G.sy;if(Math.hypot(dx,dy)>6)dragged=true;
+  if(dragged&&G.vb.w<VB0.w-1){const r=svg.getBoundingClientRect(),u=G.vb.w/r.width;VB={...G.vb,x:G.vb.x-dx*u,y:G.vb.y-dy*u};clampVB();applyVB();svg.classList.add('dragging');}}},{passive:false});
+function endPtr(e){PT.delete(e.pointerId);if(PT.size===0){G=null;svg.classList.remove('dragging');}else if(PT.size===1&&G&&G.t==='pinch'){const [p]=[...PT.values()];G={t:'pan',sx:p.x,sy:p.y,vb:{...VB}};}}
+window.addEventListener('pointerup',endPtr);window.addEventListener('pointercancel',endPtr);
+svg.addEventListener('click',e=>{if(dragged){e.stopPropagation();e.preventDefault();dragged=false;}},true);
+svg.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();const p=toSvg(e.clientX,e.clientY);zoomAbout(Math.exp(-e.deltaY*0.01),p.x,p.y);},{passive:false});
+window.addEventListener('resize',updateScale);
+// hide labels that would overlap a more important one (keeps the phone map readable)
+const LPRI=['madrid','cyl','andalucia','clm','aragon','extremadura','cataluna','galicia','valencia','murcia','navarra','asturias','paisvasco','cantabria','rioja','baleares','canarias'].concat(LMS.map(l=>l.id));
+let cullQ=false;function scheduleCull(){if(cullQ)return;cullQ=true;requestAnimationFrame(()=>{cullQ=false;cullLabels();});}
+function cullLabels(){const L=svg.querySelector('#labels');const ts=[...L.querySelectorAll('text')];ts.forEach(t=>t.style.display='');
+ if(getComputedStyle(L).display==='none')return;
+ const hot=id=>{const f=featEl(id);return f&&(f.classList.contains('sel')||f.classList.contains('target'))?0:1;};
+ const vis=ts.filter(t=>getComputedStyle(t).display!=='none').sort((a,b)=>hot(a.dataset.for)-hot(b.dataset.for)||LPRI.indexOf(a.dataset.for)-LPRI.indexOf(b.dataset.for));
+ const kept=[];const pad=VB.w*0.004;
+ for(const t of vis){if(t.dataset.for==='atlantico'){continue;}let b;try{b=t.getBBox();}catch(e){continue;}
+  if(!b.width)continue;
+  if(b.x+b.width<VB.x||b.x>VB.x+VB.w||b.y+b.height<VB.y||b.y>VB.y+VB.h)continue;
+  if(kept.some(k=>b.x<k.x+k.width+pad&&b.x+b.width+pad>k.x&&b.y<k.y+k.height&&b.y+b.height>k.y)){t.style.display='none';continue;}
+  kept.push(b);}
+}
+new MutationObserver(scheduleCull).observe(svg,{attributes:true,attributeFilter:['class'],subtree:true});
+// phone keyboard: hide the tab bar and shrink the map while typing
+document.addEventListener('focusin',e=>{if(e.target.matches('input'))document.body.classList.add('kb');});
+document.addEventListener('focusout',e=>{if(e.target.matches('input'))setTimeout(()=>{if(!document.activeElement||!document.activeElement.matches('input'))document.body.classList.remove('kb');updateScale();},120);});
 
 /* ============ VIEWS ============ */
 const VIEWS=['aprender','explorar','localiza','escribe','simulacro'];
@@ -451,7 +524,6 @@ let view='aprender', clickHandler=null;
 svg.addEventListener('click',e=>{const g=e.target.closest('.feat');if(g&&clickHandler)clickHandler(g.dataset.id);});
 function go(v){
  view=v; document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
- $('#layout').classList.toggle('mapfirst',v==='simulacro'||v==='explorar');
  clickHandler=null;
  ({aprender:learnMenu,explorar:explore,localiza:()=>chooser('localiza'),escribe:()=>chooser('escribe'),simulacro:()=>chooser('simulacro')})[v]();
 }
@@ -461,7 +533,7 @@ window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h
 /* ---- Explore ---- */
 let EX={colors:true,names:true,lm:true,sel:null};
 function explore(){
- svgMode('explore');
+ setMenu(false); svgMode('explore');
  const apply=()=>{svg.classList.toggle('colors',EX.colors);svg.classList.toggle('names',EX.names);svg.classList.toggle('hide-lm',!EX.lm);};
  apply();
  const miss=store.get().miss||{};
@@ -496,7 +568,7 @@ function explore(){
 /* ---- Set chooser ---- */
 const TITLES={localiza:['Localiza en el mapa','A name appears and you click where it is on the map. Two wrong clicks and it shows you the answer.'],escribe:['Escribe el nombre','Something lights up on the map and you type its name. Spelling and accents count, and if you miss one you have to type it correctly before moving on.'],simulacro:['Simulacro de examen','Practice test: numbered map, you write every name, then check them all at once. Just like the real quiz.']};
 function chooser(v){
- svgMode('explore'); svg.classList.add('colors');
+ setMenu(true); svgMode('explore'); svg.classList.add('colors');
  const nm=missIds().length; const [t,d]=TITLES[v];
  panel.innerHTML=`<h2>${t}</h2><p class="muted">${d}</p>
  <div class="sets">
@@ -511,6 +583,7 @@ function chooser(v){
  panel.querySelectorAll('.setbtn').forEach(b=>b.onclick=()=>({localiza:startLocate,escribe:startType,simulacro:startSim})[v](b.dataset.s));
 }
 function summary(v,set,score,total,missed,extra=''){
+ setMenu(true);
  const pct=total?Math.round(score/total*100):0;
  const msg=pct===100?'¡Perfecto! 🎉':pct>=85?'¡Muy bien!':pct>=60?'Vas bien, sigue practicando.':'Keep at it. Review your misses.';
  const uniq=[...new Map(missed.map(m=>[m.id,m])).values()];
@@ -526,6 +599,7 @@ function summary(v,set,score,total,missed,extra=''){
 /* ---- Localiza ---- */
 let L=null;
 function startLocate(set,custom){
+ setMenu(false);
  const pool=custom||setPool(set);
  const mixed=custom?(custom.some(i=>i.type==='lm')&&custom.some(i=>i.type==='com')?'all':custom[0].type):set;
  svgMode('locate',mixed==='com'||mixed==='lm'?mixed:'all');
@@ -561,6 +635,7 @@ function onLocate(id){
 /* ---- Escribe ---- */
 let T=null;
 function startType(set,custom){
+ setMenu(false);
  const pool=custom||setPool(set);
  const mixed=custom?(custom.some(i=>i.type==='lm')&&custom.some(i=>i.type==='com')?'all':custom[0].type):set;
  svgMode('type',mixed==='com'||mixed==='lm'?mixed:'all');
@@ -614,12 +689,13 @@ function next(){T.i++;renderType();}
 /* ---- Simulacro ---- */
 let S=null;
 function startSim(set,custom){
+ setMenu(false);
  const pool=custom||setPool(set);
  const mixed=custom?(custom.some(i=>i.type==='lm')&&custom.some(i=>i.type==='com')?'all':custom[0].type):set;
  svgMode('sim',mixed==='com'||mixed==='lm'?mixed:'all');
  S={set:custom?mixed:set,items:shuffle(pool),checked:false};
  let n='';
- S.items.forEach((it,k)=>{const [x,y]=anchor(it);n+=`<g class="num" data-n="${k}"><circle cx="${f1(x)}" cy="${f1(y)}" r="14"/><text x="${f1(x)}" y="${f1(y+0.5)}" text-anchor="middle" dominant-baseline="middle">${k+1}</text></g>`;});
+ S.items.forEach((it,k)=>{const [x,y]=anchor(it);n+=`<g class="num" data-n="${k}" transform="translate(${f1(x)} ${f1(y)})"><g class="sc"><circle r="10.5"/><text text-anchor="middle" dominant-baseline="central" y="0.5">${k+1}</text></g></g>`;});
  $('#numLayer').innerHTML=n;
  panel.innerHTML=`<h2>Simulacro</h2><p class="muted">Write the name for each number. Click an input to see which one it is on the map (it lights up orange).</p>
  <div class="simlist">${S.items.map((it,k)=>`<div class="simrow" data-k="${k}"><div class="n">${k+1}</div><input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${it.type==='com'?'comunidad':'accidente geográfico'}"></div>`).join('')}</div>
@@ -680,7 +756,7 @@ function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtteranc
 let LN=null;
 
 function learnMenu(){
- svgMode('explore'); svg.classList.add('colors');
+ setMenu(true); svgMode('explore'); svg.classList.add('colors');
  const done=learnDone(); const next=LESSONS.find(l=>!done.includes(l.id));
  const pct=Math.round(done.filter(d=>LESSONS.some(l=>l.id===d)).length/LESSONS.length*100);
  let lastKind='';
@@ -707,6 +783,7 @@ function learnMap(l,extraLabels=[]){
  svg.querySelectorAll('#labels text').forEach(t=>t.classList.toggle('on',(prev.has(t.dataset.for)&&!l.review)||extraLabels.includes(t.dataset.for)));
 }
 function startLesson(id){
+ setMenu(false);
  const l=LESSONS.find(x=>x.id===id);
  LN={l,phase:l.review?'find':'intro',i:0,queue:[],tries:0,score:0,first:0,again:new Set(),lock:false};
  if(l.review){beginFind();}else{renderIntro();}
@@ -834,6 +911,7 @@ renderWho();
 /* ============ START ============ */
 const h0=location.hash.slice(1);
 go(VIEWS.includes(h0)?h0:'aprender');
+updateScale();
 if(!PROF.get().cur) openWho();
 </script>
 </body>
